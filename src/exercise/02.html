@@ -20,9 +20,18 @@
     
     // My implementation:
 
-    const elProps = { children: 'Hello World', className: 'container'}
-    const element = React.createElement('div', elProps)
+    // const elProps = { children: 'Hello World', className: 'container'}
+    // const element = React.createElement('div', elProps)
     
+    // My implementation (BONUS):
+
+    const helloEl = React.createElement('span', {}, 'Hello')
+    const worldEl = React.createElement('span', {}, 'World')
+    
+    const elProps = { className: 'container'}
+    const element = React.createElement('div', elProps, helloEl, ' ', worldEl)
+
+
     // This is similar to ReactDOM.render
     // rootElement.append(element)
 
