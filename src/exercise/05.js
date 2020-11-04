@@ -49,12 +49,13 @@ function App() {
 
 //  BONUS 1
 
-const Box = props => (
+const Box = ({className = '', style, children, ...otherProps}) => (
   <div
-    className={'box ' + props.className}
-    style={{fontStyle: 'italic', ...props.style}}
+    className={('box ' + className).trim()}
+    style={{fontStyle: 'italic', ...style}}
+    {...otherProps}
   >
-    {props.children}
+    {children}
   </div>
 )
 
