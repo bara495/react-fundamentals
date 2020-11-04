@@ -47,4 +47,43 @@ function App() {
   )
 }
 
-export default App
+//  BONUS 1
+
+const Box = props => (
+  <div
+    className={'box ' + props.className}
+    style={{fontStyle: 'italic', ...props.style}}
+  >
+    {props.children}
+  </div>
+)
+
+const smallBox1 = (
+  <Box className="box--small" style={{backgroundColor: 'lightblue'}}>
+    small lightblue box
+  </Box>
+)
+
+const mediumBox1 = (
+  <Box className="box--medium" style={{backgroundColor: 'pink'}}>
+    small lightblue box
+  </Box>
+)
+
+const largeBox1 = (
+  <Box className="box--large" style={{backgroundColor: 'orange'}}>
+    small lightblue box
+  </Box>
+)
+
+function App1() {
+  return (
+    <div>
+      {smallBox1}
+      {mediumBox1}
+      {largeBox1}
+    </div>
+  )
+}
+
+export default App1
