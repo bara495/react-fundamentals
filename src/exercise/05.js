@@ -49,15 +49,18 @@ function App() {
 
 //  BONUS 1
 
-const Box = ({className = '', style, children, ...otherProps}) => (
-  <div
-    className={('box ' + className).trim()}
-    style={{fontStyle: 'italic', ...style}}
-    {...otherProps}
-  >
-    {children}
-  </div>
-)
+const Box = ({className = '', style, children, size, ...otherProps}) => {
+  const classNameResult = size ? `box box--${size}` : `box ${className}`
+  return (
+    <div
+      className={classNameResult.trim()}
+      style={{fontStyle: 'italic', ...style}}
+      {...otherProps}
+    >
+      {children}
+    </div>
+  )
+}
 
 const smallBox1 = (
   <Box className="box--small" style={{backgroundColor: 'lightblue'}}>
@@ -77,12 +80,26 @@ const largeBox1 = (
   </Box>
 )
 
+const largeBox2 = (
+  <Box size="large" style={{backgroundColor: 'orange'}}>
+    box with size prop
+  </Box>
+)
+
+const smallBox2 = (
+  <Box size="small" style={{backgroundColor: 'lightblue'}}>
+    small lightblue box
+  </Box>
+)
+
 function App1() {
   return (
     <div>
       {smallBox1}
       {mediumBox1}
       {largeBox1}
+      {smallBox2}
+      {largeBox2}
     </div>
   )
 }
