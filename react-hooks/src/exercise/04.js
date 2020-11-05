@@ -4,29 +4,7 @@
 import * as React from 'react'
 import {useLocalStorageState} from '../utils'
 
-function Board() {
-  const [squares, setSquares] = useLocalStorageState('squares', () => {
-    return Array(9).fill(null)
-  })
-
-  const nextValue = calculateNextValue(squares)
-  const winner = calculateWinner(squares)
-  const status = calculateStatus(winner, squares, nextValue)
-
-  function selectSquare(square) {
-    const winner = calculateWinner(squares)
-    const nextValue = calculateNextValue(squares)
-
-    if (winner || squares[square]) return
-    const updatedSquares = [...squares]
-    updatedSquares[square] = nextValue
-    setSquares(updatedSquares)
-  }
-
-  function restart() {
-    setSquares(Array(9).fill(null))
-  }
-
+function Board({squares, restart, selectSquare}) {
   function renderSquare(i) {
     return (
       <button className="square" onClick={() => selectSquare(i)}>
@@ -36,8 +14,7 @@ function Board() {
   }
 
   return (
-    <div>
-      <div className="status">{status}</div>
+    <div className="game-board">
       <div className="board-row">
         {renderSquare(0)}
         {renderSquare(1)}
@@ -60,11 +37,73 @@ function Board() {
   )
 }
 
+const GameInfo = ({status, currentStep, stepsNr, handleSelectStep}) => {
+  const numbers = [...Array(stepsNr).keys()]
+  const buttons = numbers.map(number => (
+    <button onClick={() => handleSelectStep(number)}>
+      <li>{number}</li>
+    </button>
+  ))
+
+  return (
+    <div className="game-info">
+      <div className="status">{status}</div>
+      <ol>{buttons}</ol>
+    </div>
+  )
+}
+
 function Game() {
+  const [currentStep, setCurrentStep] = useLocalStorageState(
+    'currentStep',
+    () => {
+      return 0
+    },
+  )
+
+  const [squaresHistory, setSquaresHistory] = useLocalStorageState(
+    'squaresHistory',
+    () => {
+      return [Array(9).fill(null)]
+    },
+  )
+
+  const squares = squaresHistory[currentStep]
+
+  const nextValue = calculateNextValue(squares)
+  const winner = calculateWinner(squares)
+  const status = calculateStatus(winner, squares, nextValue)
+
+  function selectSquare(square) {
+    if (winner || squares[square]) return
+    const updatedSquares = [...squares]
+    updatedSquares[square] = nextValue
+    setCurrentStep(currentStep + 1)
+    const updatedSquaresHistory = [...squaresHistory, updatedSquares]
+    setSquaresHistory(updatedSquaresHistory)
+  }
+
+  function restart() {
+    setCurrentStep(0)
+    setSquaresHistory([Array(9).fill(null)])
+  }
+
+  function handleSelectStep(stepNumber) {
+    setCurrentStep(stepNumber)
+  }
+
   return (
     <div className="game">
       <div className="game-board">
-        <Board />
+        <Board {...{squares, restart, selectSquare}} />
+        <GameInfo
+          {...{
+            status,
+            currentStep,
+            stepsNr: squaresHistory.length,
+            handleSelectStep,
+          }}
+        />
       </div>
     </div>
   )
