@@ -2,9 +2,7 @@
 // http://localhost:3000/isolated/exercise/06.js
 
 import * as React from 'react'
-// fetchPokemon: the function we call to get the pokemon info
-// PokemonInfoFallback: the thing we show while we're loading the pokemon info
-// PokemonDataView: the stuff we use to display the pokemon info
+
 import {
   PokemonForm,
   fetchPokemon,
@@ -14,22 +12,30 @@ import {
 
 function PokemonInfo({pokemonName}) {
   const [pokemon, setPokemon] = React.useState(null)
-  const [loading, setLoading] = React.useState(false)
+  const [error, setError] = React.useState(null)
 
   React.useEffect(() => {
     if (pokemonName === '') return
 
-    setLoading(true)
+    setPokemon(null)
 
-    fetchPokemon(pokemonName).then(pokemonData => {
-      setLoading(false)
-      setPokemon(pokemonData)
-    })
+    fetchPokemon(pokemonName).then(
+      pokemonData => setPokemon(pokemonData),
+      error => setError(error),
+    )
   }, [pokemonName])
+
+  if (error)
+    return (
+      <div role="alert">
+        There was an error:{' '}
+        <pre style={{whiteSpace: 'normal'}}>{error.message}</pre>
+      </div>
+    )
 
   return !pokemonName ? (
     'Submit a pokemon'
-  ) : !pokemon || loading ? (
+  ) : !pokemon ? (
     <PokemonInfoFallback name={pokemonName} />
   ) : (
     <PokemonDataView pokemon={pokemon} />
