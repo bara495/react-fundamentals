@@ -17,31 +17,26 @@ const resolved = states[2]
 const rejected = states[3]
 
 function PokemonInfo({pokemonName}) {
-  const [pokemon, setPokemon] = React.useState(null)
   const [error, setError] = React.useState(null)
-  const [status, setStatus] = React.useState(idle)
+  const [status, setStatus] = React.useState({status: idle, pokemon: null})
 
   React.useEffect(() => {
     if (pokemonName === '') return
 
-    // setError(null)
-    // setPokemon(null)
-
-    setStatus(pending)
+    setStatus({status: pending})
 
     fetchPokemon(pokemonName).then(
       pokemonData => {
-        setPokemon(pokemonData)
-        setStatus(resolved)
+        setStatus({status: resolved, pokemon: pokemonData})
       },
       error => {
         setError(error)
-        setStatus(rejected)
+        setStatus({status: rejected})
       },
     )
   }, [pokemonName])
 
-  switch (status) {
+  switch (status.status) {
     case idle:
       return 'Submit a pokemon'
     case pending:
@@ -54,7 +49,7 @@ function PokemonInfo({pokemonName}) {
         </div>
       )
     case resolved:
-      return <PokemonDataView pokemon={pokemon} />
+      return <PokemonDataView pokemon={status.pokemon} />
       throw new Error('This should be impossible')
   }
 }
