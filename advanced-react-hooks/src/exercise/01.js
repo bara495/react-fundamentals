@@ -4,19 +4,12 @@
 import * as React from 'react'
 
 function Counter({initialCount = 0, step = 1}) {
-  const countReducer = (state, changedState) => {
-    if (typeof changedState === 'function') {
-      console.log('function returns')
-      return changedState(state)
-    }
-    {
-      console.log('Normal return')
-      return {
-        ...state,
-        ...changedState,
-      }
-    }
-  }
+  const countReducer = (state, changedState) => ({
+    ...state,
+    ...(typeof changedState === 'function'
+      ? changedState(state)
+      : changedState),
+  })
 
   const [state, setState] = React.useReducer(countReducer, {
     count: initialCount,
