@@ -19,7 +19,10 @@ const rejected = states[3]
 
 function PokemonInfo({pokemonName}) {
   const [error, setError] = React.useState(null)
-  const [status, setStatus] = React.useState({status: idle, pokemon: null})
+  const [status, setStatus] = React.useState({
+    status: pokemonName ? pending : idle,
+    pokemon: null,
+  })
 
   React.useEffect(() => {
     if (pokemonName === '') return
@@ -50,10 +53,11 @@ function PokemonInfo({pokemonName}) {
   }
 }
 
-const ErrorFallback = ({error}) => (
+const ErrorFallback = ({error, resetErrorBoundary}) => (
   <div role="alert">
     There was an error:{' '}
     <pre style={{whiteSpace: 'normal'}}>{error.message}</pre>
+    <button onClick={resetErrorBoundary}>Try Again</button>
   </div>
 )
 
@@ -64,6 +68,10 @@ function App() {
     setPokemonName(newPokemonName)
   }
 
+  const handleReset = () => {
+    setPokemonName('')
+  }
+
   return (
     <div className="pokemon-info-app">
       <PokemonForm pokemonName={pokemonName} onSubmit={handleSubmit} />
@@ -71,6 +79,7 @@ function App() {
       <div className="pokemon-info">
         <ErrorBoundary
           FallbackComponent={ErrorFallback}
+          onReset={handleReset}
           resetKeys={pokemonName}
         >
           <PokemonInfo pokemonName={pokemonName} />
