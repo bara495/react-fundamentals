@@ -42,15 +42,42 @@ function PokemonInfo({pokemonName}) {
     case pending:
       return <PokemonInfoFallback name={pokemonName} />
     case rejected:
-      return (
-        <div role="alert">
-          There was an error:{' '}
-          <pre style={{whiteSpace: 'normal'}}>{error.message}</pre>
-        </div>
-      )
+      throw error
+    // return (
+    //   <div role="alert">
+    //     There was an error:{' '}
+    //     <pre style={{whiteSpace: 'normal'}}>{error.message}</pre>
+    //   </div>
+    // )
     case resolved:
       return <PokemonDataView pokemon={status.pokemon} />
       throw new Error('This should be impossible')
+  }
+}
+
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {hasError: false}
+  }
+
+  static getDerivedStateFromError(error) {
+    // Update state so the next render will show the fallback UI.
+    return {hasError: true}
+  }
+
+  componentDidCatch(error, errorInfo) {
+    // You can also log the error to an error reporting service
+    // logErrorToMyService(error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      // You can render any custom fallback UI
+      return <h1>[ERROR BOUNDARY] Something went wrong.</h1>
+    }
+
+    return this.props.children
   }
 }
 
@@ -66,7 +93,9 @@ function App() {
       <PokemonForm pokemonName={pokemonName} onSubmit={handleSubmit} />
       <hr />
       <div className="pokemon-info">
-        <PokemonInfo pokemonName={pokemonName} />
+        <ErrorBoundary>
+          <PokemonInfo pokemonName={pokemonName} />
+        </ErrorBoundary>
       </div>
     </div>
   )
