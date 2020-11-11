@@ -54,6 +54,9 @@ function App() {
   )
 }
 
+// BONUS 1 task - provides a nice error already thanks to previous enhancements
+// const App = () => <ToggleButton />
+
 export default App
 
 /*
