@@ -7,32 +7,20 @@ import {Switch} from '../switch'
 const ToggleContext = React.createContext()
 
 function Toggle({onToggle, children}) {
-  return (
-    <ToggleProvider>
-      {React.Children.map(children, child => {
-        return typeof child.type === 'string'
-          ? child
-          : React.cloneElement(child)
-      })}
-    </ToggleProvider>
-  )
+  return <ToggleProvider>{children}</ToggleProvider>
 }
 
 const ToggleProvider = props => {
   const [on, setOn] = React.useState(false)
   const toggle = () => setOn(!on)
 
-  const value = [on, toggle]
-
-  return <ToggleContext.Provider value={value} {...props} />
+  return <ToggleContext.Provider value={[on, toggle]} {...props} />
 }
 
 const useToggle = () => {
   const context = React.useContext(ToggleContext)
   if (!context) {
-    throw new Error(
-      'useToggle must be rendered within the ToggleContext.Provider',
-    )
+    throw new Error('useToggle must be rendered within the ToggleProvider')
   }
   return context
 }
