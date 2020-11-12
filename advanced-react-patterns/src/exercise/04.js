@@ -29,9 +29,12 @@ import {Switch} from '../switch'
 function useToggle() {
   const [on, setOn] = React.useState(false)
   const toggle = () => setOn(!on)
-  const getTogglerProps = additionalProps => ({
+  const getTogglerProps = ({onClick, ...additionalProps} = {}) => ({
     'aria-pressed': on,
-    onClick: toggle,
+    onClick: () => {
+      onClick && onClick()
+      toggle()
+    },
     ...additionalProps,
   })
 
