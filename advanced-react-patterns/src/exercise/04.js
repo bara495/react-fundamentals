@@ -26,15 +26,20 @@ import {Switch} from '../switch'
 // }
 
 // BONUS 1
+const callAll = (...fns) => {
+  return (...args) => {
+    fns.forEach(fn => {
+      fn && fn(...args)
+    })
+  }
+}
+
 function useToggle() {
   const [on, setOn] = React.useState(false)
   const toggle = () => setOn(!on)
   const getTogglerProps = ({onClick, ...additionalProps} = {}) => ({
     'aria-pressed': on,
-    onClick: () => {
-      onClick && onClick()
-      toggle()
-    },
+    onClick: callAll(onClick, toggle),
     ...additionalProps,
   })
 
